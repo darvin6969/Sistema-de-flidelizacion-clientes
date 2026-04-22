@@ -208,8 +208,7 @@ export function Scanner() {
         <div className="space-y-6">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight text-foreground flex items-center gap-3">
-                        <Camera className="w-8 h-8 text-primary" />
+                    <h2 className="text-3xl font-bold tracking-tight text-foreground">
                         Escáner de Operadores
                     </h2>
                     <p className="text-muted-foreground mt-1">Identificación instantánea para carga de puntos y canjes.</p>
@@ -385,124 +384,131 @@ export function Scanner() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     {/* Backdrop */}
                     <div 
-                        className="absolute inset-0 bg-slate-950/60 backdrop-blur-md"
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
                         onClick={() => setShowModal(false)}
                     ></div>
                     
                     {/* Modal Content */}
-                    <div className="relative w-full max-w-2xl bg-card border border-border rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
+                    <div className="relative w-full max-w-2xl bg-card border border-border rounded-[2.5rem] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
                         {/* Header Image/Pattern */}
-                        <div className="h-40 bg-gradient-to-br from-primary to-orange-500 relative overflow-hidden">
-                            <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,var(--primary-foreground),transparent)]"></div>
+                        <div className="h-32 bg-gradient-to-r from-emerald-600 to-emerald-400 relative overflow-hidden">
+                            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white,transparent)]"></div>
                             <button 
                                 onClick={() => setShowModal(false)}
-                                className="absolute top-6 right-6 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors z-10"
+                                className="absolute top-4 right-4 p-2 bg-black/20 hover:bg-black/40 text-white rounded-full backdrop-blur-md transition-colors z-10"
                             >
                                 <X className="w-5 h-5" />
                             </button>
-                            <div className="absolute -bottom-10 left-10 h-28 w-28 rounded-3xl bg-card border-8 border-card flex items-center justify-center text-5xl font-black text-primary shadow-2xl">
+                            <div className="absolute -bottom-8 left-8 h-24 w-24 rounded-2xl bg-card border-4 border-card flex items-center justify-center text-4xl font-black text-emerald-500 shadow-xl">
                                 {identifiedCustomer.name.charAt(0)}
                             </div>
                         </div>
 
-                        <div className="pt-16 p-10 space-y-10 overflow-y-auto max-h-[75vh]">
+                        <div className="pt-12 p-8 space-y-8 overflow-y-auto max-h-[75vh]">
                             {/* Profile Info */}
-                            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-6">
+                            <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                                 <div className="space-y-1">
                                     <h3 className="text-3xl font-black text-foreground tracking-tight">{identifiedCustomer.name}</h3>
-                                    <div className="flex items-center gap-3">
-                                        <span className="px-3 py-1 bg-primary/10 text-primary text-[10px] font-black rounded-full uppercase tracking-[0.1em] border border-primary/20">
+                                    <div className="flex items-center gap-2">
+                                        <div className={`px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider border ${
+                                            identifiedCustomer.tier === 'Gold' ? 'bg-amber-500/10 text-amber-500 border-amber-500/20' :
+                                            identifiedCustomer.tier === 'Silver' ? 'bg-slate-400/10 text-slate-400 border-slate-400/20' :
+                                            'bg-emerald-500/10 text-emerald-500 border-emerald-500/20'
+                                        }`}>
                                             {identifiedCustomer.tier}
-                                        </span>
-                                        <p className="text-xs font-bold text-muted-foreground">{identifiedCustomer.email}</p>
+                                        </div>
+                                        <p className="text-xs font-medium text-muted-foreground">{identifiedCustomer.email}</p>
                                     </div>
                                 </div>
-                                <div className="text-left md:text-right p-4 bg-muted/30 rounded-[2rem] min-w-[180px] border border-border/50">
+                                <div className="text-left md:text-right p-4 bg-muted/50 rounded-2xl min-w-[160px] border border-border">
                                     <p className="text-[10px] font-black text-muted-foreground uppercase tracking-widest mb-1">Saldo Disponible</p>
-                                    <p className="text-4xl font-black text-primary">{identifiedCustomer.loyaltyPoints} <span className="text-base text-muted-foreground">PTS</span></p>
+                                    <div className="flex items-baseline md:justify-end gap-1">
+                                        <p className="text-3xl font-black text-emerald-500">{identifiedCustomer.loyaltyPoints}</p>
+                                        <span className="text-[10px] font-black text-muted-foreground">PTS</span>
+                                    </div>
                                 </div>
                             </div>
 
                             {/* Actions Tabs Section */}
-                            <div className="grid gap-8 md:grid-cols-2">
+                            <div className="grid gap-6 md:grid-cols-2">
                                 {/* Add Points Form */}
-                                <div className="bg-muted/30 p-8 rounded-[2.5rem] border border-border/50 relative overflow-hidden group">
-                                    <h4 className="font-black flex items-center gap-3 mb-6 text-xs uppercase tracking-widest text-emerald-600">
+                                <div className="bg-muted/30 p-6 rounded-[2rem] border border-border/50 relative overflow-hidden group">
+                                    <h4 className="font-black flex items-center gap-2 mb-6 text-[10px] uppercase tracking-widest text-emerald-600">
                                         <PlusCircle className="w-4 h-4" />
                                         Carga de Puntos
                                     </h4>
-                                    <div className="space-y-5">
+                                    <div className="space-y-4">
                                         <div>
                                             <label className="text-[10px] font-black text-muted-foreground uppercase ml-1 tracking-widest">Monto a Cargar</label>
-                                            <div className="relative mt-2">
-                                                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                                            <div className="relative mt-1">
+                                                <Hash className="absolute left-4 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                                                 <input 
                                                     type="number"
                                                     value={pointsToAdd}
                                                     onChange={(e) => setPointsToAdd(e.target.value)}
-                                                    className="w-full pl-12 pr-6 py-4 bg-background border-2 border-transparent focus:border-emerald-500/30 rounded-2xl text-2xl font-black focus:ring-0 transition-all shadow-inner"
+                                                    className="w-full pl-10 pr-4 py-3 bg-background border border-border rounded-xl text-2xl font-black text-foreground focus:ring-2 focus:ring-emerald-500/20 transition-all outline-none"
                                                     placeholder="0"
                                                 />
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="text-[10px] font-black text-muted-foreground uppercase ml-1 tracking-widest">Motivo de Transacción</label>
+                                            <label className="text-[10px] font-black text-muted-foreground uppercase ml-1 tracking-widest">Motivo</label>
                                             <select 
                                                 value={reason}
                                                 onChange={(e) => setReason(e.target.value)}
-                                                className="w-full mt-2 px-5 py-4 bg-background border-2 border-transparent focus:border-emerald-500/30 rounded-2xl text-sm font-bold focus:ring-0 appearance-none shadow-inner"
+                                                className="w-full mt-1 px-4 py-3 bg-background border border-border rounded-xl text-sm font-bold text-foreground focus:ring-2 focus:ring-emerald-500/20 transition-all outline-none"
                                             >
-                                                <option>Venta de Servicio</option>
-                                                <option>Compra de Equipo</option>
-                                                <option>Visita Técnica</option>
-                                                <option>Bonificación Especial</option>
-                                                <option>Corrección de Saldo</option>
+                                                <option value="Venta de Servicio">Venta de Servicio</option>
+                                                <option value="Compra de Equipo">Compra de Equipo</option>
+                                                <option value="Visita Técnica">Visita Técnica</option>
+                                                <option value="Bonificación Especial">Bonificación Especial</option>
+                                                <option value="Corrección de Saldo">Corrección de Saldo</option>
                                             </select>
                                         </div>
                                         <button 
                                             onClick={handleAddPoints}
                                             disabled={isProcessing}
-                                            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-2xl font-black shadow-xl shadow-emerald-600/20 flex items-center justify-center gap-3 transition-all active:scale-95 disabled:opacity-50"
+                                            className="w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-black shadow-lg shadow-emerald-600/20 flex items-center justify-center gap-2 transition-all active:scale-95 disabled:opacity-50 text-xs uppercase tracking-widest"
                                         >
-                                            {isProcessing ? <RefreshCw className="w-5 h-5 animate-spin" /> : "CARGAR PUNTOS"}
+                                            {isProcessing ? <RefreshCw className="w-4 h-4 animate-spin" /> : "CARGAR PUNTOS"}
                                         </button>
                                     </div>
                                 </div>
 
                                 {/* Quick Redeem */}
-                                <div className="bg-muted/30 p-8 rounded-[2.5rem] border border-border/50 flex flex-col relative overflow-hidden">
-                                    <h4 className="font-black flex items-center gap-3 mb-6 text-xs uppercase tracking-widest text-primary">
+                                <div className="bg-muted/30 p-6 rounded-[2rem] border border-border/50 flex flex-col relative overflow-hidden group">
+                                    <h4 className="font-black flex items-center gap-2 mb-6 text-[10px] uppercase tracking-widest text-emerald-600">
                                         <Gift className="w-4 h-4" />
                                         Canjes de Premios
                                     </h4>
-                                    <div className="flex-1 space-y-4 overflow-y-auto max-h-[280px] pr-2 custom-scrollbar">
+                                    <div className="flex-1 space-y-3 overflow-y-auto max-h-[240px] pr-2 custom-scrollbar">
                                         {rewards.filter(r => r.pointsCost <= (identifiedCustomer.loyaltyPoints + 100)).length > 0 ? (
                                             rewards.map(reward => (
                                                 <div 
                                                     key={reward.id} 
-                                                    className={`p-4 rounded-2xl border-2 flex items-center justify-between transition-all group/item ${
+                                                    className={`p-4 rounded-2xl border flex items-center justify-between transition-all ${
                                                         identifiedCustomer.loyaltyPoints >= reward.pointsCost 
-                                                        ? 'bg-card border-border hover:border-primary/50 shadow-sm' 
-                                                        : 'bg-slate-100 dark:bg-slate-900 border-transparent opacity-50'
+                                                        ? 'bg-card border-border hover:border-emerald-500/30' 
+                                                        : 'bg-background/50 border-transparent opacity-40 grayscale'
                                                     }`}
                                                 >
                                                     <div className="min-w-0">
-                                                        <p className="text-sm font-black truncate text-foreground">{reward.name}</p>
-                                                        <p className="text-[10px] font-bold text-primary mt-0.5">{reward.pointsCost} PTS</p>
+                                                        <p className="text-xs font-black truncate text-foreground">{reward.name}</p>
+                                                        <p className="text-[10px] font-black text-emerald-500 mt-0.5">{reward.pointsCost} PTS</p>
                                                     </div>
                                                     <button 
                                                         onClick={() => handleQuickRedeem(reward)}
                                                         disabled={isProcessing || identifiedCustomer.loyaltyPoints < reward.pointsCost}
-                                                        className="px-5 py-2 bg-primary text-primary-foreground rounded-xl text-[10px] font-black hover:bg-primary/90 disabled:opacity-0 transition-all hover:scale-105 active:scale-95"
+                                                        className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-[9px] font-black hover:bg-emerald-700 disabled:opacity-0 transition-all uppercase tracking-widest"
                                                     >
                                                         CANJEAR
                                                     </button>
                                                 </div>
                                             ))
                                         ) : (
-                                            <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-background/50 rounded-3xl border-2 border-dashed border-border/50">
-                                                <Gift className="w-10 h-10 text-muted-foreground opacity-10 mb-3" />
-                                                <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest">Sin canjes cercanos</p>
+                                            <div className="h-full flex flex-col items-center justify-center text-center p-6 bg-background/50 rounded-2xl border border-dashed border-border">
+                                                <Gift className="w-8 h-8 text-muted-foreground/30 mb-2" />
+                                                <p className="text-[9px] text-muted-foreground uppercase font-black tracking-widest">Sin canjes cercanos</p>
                                             </div>
                                         )}
                                     </div>
@@ -510,14 +516,14 @@ export function Scanner() {
                             </div>
 
                             {/* Footer Activity */}
-                            <div className="pt-8 border-t border-border/50 flex flex-col sm:flex-row items-center justify-between gap-4 text-muted-foreground">
-                                <div className="flex items-center gap-3 text-xs font-bold">
-                                    <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                                        <History className="w-4 h-4 text-primary" />
-                                    </div>
+                            <div className="pt-6 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4 text-muted-foreground">
+                                <div className="flex items-center gap-2 text-[10px] font-bold">
+                                    <History className="w-4 h-4 text-emerald-500" />
                                     <span>Última actividad registrada hoy</span>
                                 </div>
-                                <button className="text-[10px] font-black uppercase tracking-widest hover:text-primary transition-all pb-1 border-b-2 border-transparent hover:border-primary">Ficha de Cliente Integrada</button>
+                                <button className="text-[9px] font-black uppercase tracking-widest hover:text-primary transition-all border-b border-transparent hover:border-primary pb-0.5">
+                                    Ficha de Cliente Completa
+                                </button>
                             </div>
                         </div>
                     </div>
