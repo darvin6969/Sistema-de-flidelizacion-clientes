@@ -104,24 +104,30 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             let loginEmail = usernameOrEmail.trim();
 
             // If it doesn't look like an email, intercept it by checking staff_profiles username
+            // 1. Resolve username to its deterministic auth email
             if (!loginEmail.includes('@')) {
+                const username = loginEmail.toLowerCase().trim();
+                
+                // First check if user exists and is active
                 const { data: profile, error: profileError } = await supabase
                     .from('staff_profiles')
-                    .select('email, is_active')
-                    .eq('username', loginEmail)
+                    .select('is_active')
+                    .eq('username', username)
                     .single();
 
                 if (profileError || !profile) {
+                    console.error("Login Error: Username not found", username);
                     toast.error('Nombre de usuario no encontrado.');
                     return false;
                 }
 
                 if (!profile.is_active) {
-                    toast.error('Esta cuenta está inactiva. Contacte al administrador.');
+                    toast.error('Esta cuenta está inactiva.');
                     return false;
                 }
 
-                loginEmail = profile.email;
+                // Generate the same deterministic internal email used in StaffContext
+                loginEmail = `${username.replace(/[^a-zA-Z0-9]/g, '')}@vanguard.internal`;
             }
 
             const { error, data } = await supabase.auth.signInWithPassword({

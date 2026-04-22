@@ -11,6 +11,7 @@ interface StaffContextType {
     createRole: (role: Omit<Role, 'id' | 'created_at'>) => Promise<boolean>;
     createStaff: (staff: Omit<StaffProfile, 'id' | 'created_at' | 'role'> & { password?: string }) => Promise<boolean>;
     updateStaff: (id: string, updates: Partial<StaffProfile>) => Promise<boolean>;
+    deleteStaff: (id: string) => Promise<boolean>;
 }
 
 const StaffContext = createContext<StaffContextType | undefined>(undefined);
@@ -77,12 +78,11 @@ export const StaffProvider = ({ children }: { children: ReactNode }) => {
                     auth: { persistSession: false, autoRefreshToken: false }
                 });
 
-                // Generate a dummy email to satisfy Supabase Auth requirements
-                // while bypassing real email confirmation and rate limits.
-                const dummyAuthEmail = `${staffData.username.replace(/[^a-zA-Z0-9]/g, '')}${Date.now()}@quanticasystem.com`;
+                // Determinist internal email for Auth (username-based)
+                const authEmail = `${staffData.username.toLowerCase().replace(/[^a-zA-Z0-9]/g, '')}@vanguard.internal`;
 
                 const { data: authData, error: authError } = await secondarySupabase.auth.signUp({
-                    email: dummyAuthEmail,
+                    email: authEmail,
                     password: staffData.password,
                     options: { data: { full_name: staffData.full_name } }
                 });
@@ -95,7 +95,7 @@ export const StaffProvider = ({ children }: { children: ReactNode }) => {
                 return false;
             }
 
-            // Insert into staff_profiles
+            // Insert into staff_profiles - email here is the PUBLIC one
             const newProfile = {
                 id: authId,
                 username: staffData.username.toLowerCase().trim(),
@@ -119,11 +119,26 @@ export const StaffProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
-    const updateStaff = async (id: string, updates: Partial<StaffProfile>) => {
+    const updateStaff = async (id: string, updates: Partial<StaffProfile> & { password?: string }) => {
         try {
-            const { error } = await supabase.from('staff_profiles').update(updates).eq('id', id);
-            if (error) throw error;
-            toast.success('Perfil actualizado');
+            // 1. Update Auth password if provided
+            if (updates.password) {
+                if (secondarySupabase) {
+                    const { error: authError } = await secondarySupabase.auth.admin.updateUserById(id, {
+                        password: updates.password
+                    });
+                    if (authError) throw authError;
+                }
+            }
+
+            // 2. Update Profile data
+            const { password, ...profileUpdates } = updates;
+            if (Object.keys(profileUpdates).length > 0) {
+                const { error } = await supabase.from('staff_profiles').update(profileUpdates).eq('id', id);
+                if (error) throw error;
+            }
+
+            toast.success('Perfil actualizado correctamente');
             await loadStaffData();
             return true;
         } catch (error: any) {
@@ -132,8 +147,21 @@ export const StaffProvider = ({ children }: { children: ReactNode }) => {
         }
     };
 
+    const deleteStaff = async (id: string) => {
+        try {
+            const { error } = await supabase.from('staff_profiles').delete().eq('id', id);
+            if (error) throw error;
+            toast.success('Miembro eliminado');
+            await loadStaffData();
+            return true;
+        } catch (error: any) {
+            toast.error(`Error al eliminar: ${error.message}`);
+            return false;
+        }
+    };
+
     return (
-        <StaffContext.Provider value={{ staff, roles, isLoading, loadStaffData, createRole, createStaff, updateStaff }}>
+        <StaffContext.Provider value={{ staff, roles, isLoading, loadStaffData, createRole, createStaff, updateStaff, deleteStaff }}>
             {children}
         </StaffContext.Provider>
     );

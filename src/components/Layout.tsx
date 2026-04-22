@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { LayoutDashboard, Users, Gift, Settings, LogOut, FileText, Shield, User, Search, Bell, Key, Info, CheckCircle, AlertTriangle, Sun, Moon } from 'lucide-react';
+import { LayoutDashboard, Users, Gift, Settings, LogOut, FileText, Shield, User, Search, Bell, Key, Info, CheckCircle, AlertTriangle, Sun, Moon, ScanLine } from 'lucide-react';
 
 import { useAuth } from '../context/AuthContext';
 import { useCustomers } from '../context/CustomerContext';
@@ -7,8 +7,8 @@ import { useNotifications } from '../context/NotificationContext';
 
 interface LayoutProps {
     children: React.ReactNode;
-    activePage: 'dashboard' | 'customers' | 'loyalty' | 'reports' | 'settings' | 'staff' | 'profile';
-    onNavigate: (page: 'dashboard' | 'customers' | 'loyalty' | 'reports' | 'settings' | 'staff' | 'profile') => void;
+    activePage: 'dashboard' | 'customers' | 'loyalty' | 'reports' | 'settings' | 'staff' | 'profile' | 'scanner';
+    onNavigate: (page: 'dashboard' | 'customers' | 'loyalty' | 'reports' | 'settings' | 'staff' | 'profile' | 'scanner') => void;
 }
 
 export function Layout({ children, activePage, onNavigate }: LayoutProps) {
@@ -121,6 +121,7 @@ export function Layout({ children, activePage, onNavigate }: LayoutProps) {
 
     const allNavItems = [
         { id: 'dashboard', label: 'Panel', icon: LayoutDashboard, show: true },
+        { id: 'scanner', label: 'Escáner QR', icon: ScanLine, show: true },
         { id: 'customers', label: 'Clientes', icon: Users, show: isSuperAdmin || role?.can_manage_customers },
         { id: 'loyalty', label: 'Programa Lealtad', icon: Gift, show: isSuperAdmin || role?.can_manage_customers || role?.can_manage_rewards },
         { id: 'reports', label: 'Reportes', icon: FileText, show: true },

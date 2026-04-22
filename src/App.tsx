@@ -10,6 +10,7 @@ import { Settings } from './pages/Settings';
 import { Login } from './pages/Login';
 import { CustomerPortal } from './pages/CustomerPortal';
 import { StaffManagement } from './pages/StaffManagement';
+import { Scanner } from './pages/Scanner';
 import { Profile } from './pages/Profile';
 import { Toaster } from 'react-hot-toast';
 import { StaffProvider } from './context/StaffContext';
@@ -17,7 +18,7 @@ import { NotificationProvider } from './context/NotificationContext';
 
 function AppContent() {
     const { isAuthenticated, isLoading } = useAuth();
-    const [activePage, setActivePage] = useState<'dashboard' | 'customers' | 'loyalty' | 'reports' | 'settings' | 'staff' | 'profile'>('dashboard');
+    const [activePage, setActivePage] = useState<'dashboard' | 'customers' | 'loyalty' | 'reports' | 'settings' | 'staff' | 'profile' | 'scanner'>('dashboard');
     const [showPortal, setShowPortal] = useState(false);
 
     if (isLoading) {
@@ -45,6 +46,7 @@ function AppContent() {
                     {activePage === 'dashboard' && <Dashboard />}
                     {activePage === 'customers' && <Customers />}
                     {activePage === 'loyalty' && <Loyalty />}
+                    {activePage === 'scanner' && <Scanner />}
                     {activePage === 'reports' && <Reports />}
                     {activePage === 'settings' && <Settings />}
                     {activePage === 'staff' && <StaffManagement />}
